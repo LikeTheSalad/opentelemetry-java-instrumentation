@@ -19,6 +19,8 @@ import io.opentelemetry.javaagent.instrumentation.servlet.common.response.HttpSe
 import io.opentelemetry.javaagent.instrumentation.servlet.common.service.ServletAndFilterInstrumentation;
 import io.opentelemetry.javaagent.instrumentation.servlet.common.service.ServletOutputStreamInstrumentation;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.bytebuddy.matcher.ElementMatcher;
 
 @AutoService(InstrumentationModule.class)
@@ -64,6 +66,30 @@ public class Servlet3InstrumentationModule extends InstrumentationModule
 
   private static String adviceClassName(String suffix) {
     return Servlet3InstrumentationModule.class.getPackage().getName() + suffix;
+  }
+
+  // In OSGi environments, different servlet classes may be loaded by different classloaders,
+  // resulting in multiple InstrumentationModuleClassLoaders for this module.
+  // The VirtualField<Servlet, MappingResolver.Factory> stores a value in one classloader and reads
+  // it from another. If MappingResolver.Factory is injected as a helper class, each classloader
+  // gets its own copy, causing ClassCastException on retrieval.
+  // By excluding these classes from helper injection, they are loaded from the shared agent
+  // classloader instead, ensuring type compatibility across all InstrumentationModuleClassLoaders.
+  private static final String[] CLASSES_TO_LOAD_FROM_AGENT =
+      new String[] {
+        "io.opentelemetry.instrumentation.servlet.internal.MappingResolver",
+        "io.opentelemetry.instrumentation.servlet.internal.MappingResolver$Factory",
+        "io.opentelemetry.instrumentation.servlet.internal.MappingResolver$WildcardMatcher",
+        "io.opentelemetry.instrumentation.servlet.internal.MappingResolver$PrefixMatcher",
+        "io.opentelemetry.instrumentation.servlet.internal.MappingResolver$SuffixMatcher",
+        "io.opentelemetry.instrumentation.servlet.internal.ServletMappingResolverFactory",
+        "io.opentelemetry.instrumentation.servlet.internal.ServletMappingResolverFactory$Mappings",
+        "io.opentelemetry.instrumentation.servlet.internal.ServletMappingResolverFactory$MappingResolverHolder",
+      };
+
+  @Override
+  public List<String> injectedClassNames() {
+    return Stream.of(CLASSES_TO_LOAD_FROM_AGENT).collect(Collectors.toList());
   }
 
   @Override
