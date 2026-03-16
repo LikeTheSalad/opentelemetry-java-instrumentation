@@ -167,3 +167,4 @@ javalin:testing
 javalin-7.0:javaagent
 jaxrs-client:jaxrs-client-1.1-testing
 jaxrs-client:jaxrs-client-2.0-testing
+jaxrs-1.0:javaagent
