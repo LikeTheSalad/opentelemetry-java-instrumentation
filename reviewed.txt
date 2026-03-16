@@ -99,3 +99,4 @@ elasticsearch-transport-6.0:testing
 elasticsearch-transport-common:testing
 executors:bootstrap
 elasticsearch-transport-5.3:javaagent
+executors:jdk21-testing
