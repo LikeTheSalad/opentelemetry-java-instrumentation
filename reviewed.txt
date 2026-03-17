@@ -503,3 +503,4 @@ spring-webmvc-common:testing
 spring-ws-2.0:javaagent
 starters:spring-boot-starter
 spring-ws-2.0:testing
+spymemcached-2.12:javaagent
