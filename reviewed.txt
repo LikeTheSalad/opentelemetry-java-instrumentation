@@ -395,3 +395,4 @@ reactor-netty-1.0:javaagent
 rediscala-1.8:javaagent
 reactor-netty-1.0:javaagent-unit-tests
 reactor-3.1:library
+redisson-3.0:javaagent
