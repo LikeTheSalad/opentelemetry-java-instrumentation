@@ -359,3 +359,4 @@ payara:javaagent
 oshi:testing
 pekko-actor-1.0:javaagent
 pekko-http-1.0:javaagent
+play-mvc-2.4:javaagent
